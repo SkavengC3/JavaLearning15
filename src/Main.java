@@ -1,13 +1,11 @@
 import java.util.Scanner;
 
 public class Main {
-    static String player1 = "Гравець 1";
-    static String player2 = "Гравець 2";
-    static int height = 7;
+    static GameSettings gameSettings;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Saves.loadSettings(height, player1, player2);
+        gameSettings = Saves.loadSettings();
 
         while (true) {
             System.out.print("""
@@ -22,7 +20,7 @@ public class Main {
             String choice = sc.nextLine();
             switch (choice) {
                 case "1":
-                    Game.game(sc, height, player1, player2);
+                    Game.game(sc, gameSettings);
                     break;
                 case "2":
                     settings(sc);
@@ -46,18 +44,23 @@ public class Main {
                 int newSize = sc.nextInt();
                 sc.nextLine();
                 if (newSize >= 3 && newSize % 2 == 1 && newSize <= 9) {
-                    height = newSize * 2 + 1;
+                    gameSettings.setBoardSize(newSize * 2 + 1);
                     break;
-                } else System.out.println("Невірний розмір!");
+                } else {
+                    System.out.println("Невірний розмір!");
+                }
             } else {
                 System.out.println("Введіть число!");
                 sc.nextLine();
             }
         }
-        System.out.print("Введіть ім’я першого гравця: ");
-        player1 = sc.nextLine();
-        System.out.print("Введіть ім’я другого гравця: ");
-        player2 = sc.nextLine();
-        Saves.saveSettings(height, player1, player2);
+
+        System.out.print("Введіть ім'я першого гравця: ");
+        gameSettings.setPlayer1Name(sc.nextLine());
+
+        System.out.print("Введіть ім'я другого гравця: ");
+        gameSettings.setPlayer2Name(sc.nextLine());
+
+        Saves.saveSettings(gameSettings);
     }
 }
